@@ -16,8 +16,8 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 // [X] Check Balances
 // [X] Make Order
 // [X] Cancel Order
-// [ ] Fill Order 
-// [ ] Charge Fees 
+// [X] Fill Order 
+// [X] Charge Fees 
  
  contract Exchange {
      using SafeMath for uint;
@@ -30,6 +30,7 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
      mapping(uint256 => _Order) public orders;
      uint256 public orderCount; 
      mapping(uint256 => bool) public orderCancelled;
+     mapping(uint256 => bool) public orderFilled;
 
      //events
      event Deposit(address token, address user, uint256 amount, uint256 balance);
@@ -52,8 +53,18 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
          uint256 amountGive,
          uint256 timestamp
      );
+     event Trade(
+         uint256 id,
+         address user,
+         address tokenGet,
+         uint256 amountGet,
+         address tokenGive,
+         uint256 amountGive,
+         address userFill,
+         uint timestamp
+     );
 
-     //
+     
      // a way to model the order 
     struct _Order{
         uint256 id;
@@ -130,4 +141,30 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
          orderCancelled[_id] = true;
          emit Cancel(_order.id,msg.sender, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, now);
      }
+
+     function fillOrder(uint256 _id) public {
+         require(_id > 0 && _id <= orderCount);
+         require(!orderFilled[_id]);
+         require(!orderCancelled[_id]);
+         //Fetch the order 
+         _Order storage _order = orders[_id];
+         _trade(_order.id, _order.user, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive);
+         //Mark order as filled
+         orderFilled[_order.id] = true;
+     }
+
+     function _trade(uint256 _orderId, address _user, address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) internal {
+         //Fee paid by the user that fills the order, a.k.a msg.sender.
+         //Fee deducted from _amountGet
+         uint256 _feeAmount = _amountGet.mul(feePercent).div(100); 
+         //Execute trade
+         tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(_amountGet.add(_feeAmount));
+         tokens[_tokenGet][_user] = tokens[_tokenGet][_user].add(_amountGet);
+          //Charge fees
+         tokens[_tokenGet][feeAccount] = tokens[_tokenGet][feeAccount].add(_feeAmount);
+         tokens[_tokenGive][_user] = tokens[_tokenGive][_user].sub(_amountGive);
+         tokens[_tokenGive][msg.sender] = tokens[_tokenGive][_user].add(_amountGive);
+         //Emit trade event
+         emit Trade(_orderId, _user, _tokenGet, _amountGet, _tokenGive, _amountGive, msg.sender, now);
+     } 
  }
