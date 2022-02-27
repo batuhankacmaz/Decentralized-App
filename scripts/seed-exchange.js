@@ -169,3 +169,6 @@ module.exports = async function (callback) {
   }
   callback();
 };
+
+//When you reset the ganache you have to also write terminal truffle migrate --reset
+// then truffle exec scripts/seed-exchange.js
