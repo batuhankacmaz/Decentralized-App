@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import {GlobalContainer} from "../pages.styles";
 import "./Dexchange.css";
+import {connect} from "react-redux";
 import {useDispatch, useSelector} from "react-redux";
 import {
   loadWeb3,
@@ -8,30 +9,24 @@ import {
   loadToken,
   loadExchange,
 } from "../../features/web3/interactions";
+import {contractsLoadedSelector} from "../../features/web3/selectors";
 
 function Dexchange() {
   const dispatch = useDispatch();
+
   const loadBlockchainData = async (dispatch) => {
     const web3 = await loadWeb3(dispatch);
-    await window.ethereum.enable();
-    const network = await web3.eth.net.getNetworkType();
     const networkId = await web3.eth.net.getId();
+    console.log(networkId);
     const account = await loadAccount(web3, dispatch);
     const token = await loadToken(web3, networkId, dispatch);
     const exchange = await loadExchange(web3, networkId, dispatch);
-    const totalSupply = await token.methods.totalSupply().call();
-    console.log("token", web3);
-    console.log("network", network);
-    console.log("networkId", networkId);
-    console.log("account", account);
-    console.log("token", token);
-    console.log("exchange", exchange);
-    console.log("totalSupply", totalSupply);
+    console.log(account);
   };
 
   useEffect(() => {
     loadBlockchainData(dispatch);
-  }, [dispatch]);
+  }, [loadBlockchainData]);
 
   return (
     <GlobalContainer>
@@ -120,5 +115,8 @@ function Dexchange() {
     </GlobalContainer>
   );
 }
+function mapStateToProps(state) {
+  return {};
+}
 
-export default Dexchange;
+export default connect(mapStateToProps)(Dexchange);

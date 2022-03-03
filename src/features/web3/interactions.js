@@ -10,7 +10,8 @@ import Exchange from "../../abis/Exchange.json";
 
 export const loadWeb3 = async (dispatch) => {
   if (typeof window.ethereum !== "undefined") {
-    const web3 = new Web3(window.ethereum);
+    const ethereum = window.ethereum;
+    const web3 = new Web3(ethereum);
     dispatch(web3Loaded(web3));
     return web3;
   } else {
@@ -20,6 +21,8 @@ export const loadWeb3 = async (dispatch) => {
 };
 
 export const loadAccount = async (web3, dispatch) => {
+  const ethereum = window.ethereum;
+  const enabledWeb3 = await ethereum.enable();
   const accounts = await web3.eth.getAccounts();
   const account = await accounts[0];
   if (typeof account !== "undefined") {

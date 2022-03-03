@@ -1,10 +1,22 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import Web3 from "web3";
+
+export const loadWeb3 = createAsyncThunk("web3/loadWeb3", async () => {
+  const ethereum = window.ethereum;
+  if (typeof ethereum !== "undefined") {
+    const web3 = new Web3(ethereum);
+    console.log(web3);
+    return web3;
+  } else {
+    window.alert("Please install MetaMask");
+    window.location.assign("https://metamask.io/");
+  }
+});
 
 export const web3Slice = createSlice({
   name: "web3",
   initialState: {
-    connection: {},
+    web3: {},
     token: {},
     exchange: {},
     account: "",
@@ -21,6 +33,11 @@ export const web3Slice = createSlice({
     },
     exchangeLoaded: (state, action) => {
       state.exchange = action.payload;
+    },
+  },
+  extraReducers: {
+    [loadWeb3.fulfilled]: (state, action) => {
+      state.web3 = action.payload;
     },
   },
 });

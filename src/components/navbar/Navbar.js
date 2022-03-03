@@ -1,7 +1,9 @@
 import React from "react";
 import {Nav, NavLink, Bars, NavMenu, Btc} from "./NavbarElements";
+import {connect} from "react-redux";
+import {accountSelector} from "../../features/web3/selectors";
 
-function Navbar() {
+function Navbar({account}) {
   return (
     <>
       <Nav>
@@ -15,12 +17,17 @@ function Navbar() {
             BatuFlex CAPP Exchange
           </NavLink>
           <NavLink to="/wallet" activestyle="true">
-            Wallet
+            {account}
           </NavLink>
         </NavMenu>
       </Nav>
     </>
   );
 }
+function mapStateToProps(state) {
+  return {
+    account: accountSelector(state),
+  };
+}
 
-export default Navbar;
+export default connect(mapStateToProps)(Navbar);
