@@ -8,25 +8,15 @@ import {
   loadAccount,
   loadToken,
   loadExchange,
-} from "../../features/web3/interactions";
-import {contractsLoadedSelector} from "../../features/web3/selectors";
+} from "../../features/web3/web3Slice";
 
 function Dexchange() {
   const dispatch = useDispatch();
-
-  const loadBlockchainData = async (dispatch) => {
-    const web3 = await loadWeb3(dispatch);
-    const networkId = await web3.eth.net.getId();
-    console.log(networkId);
-    const account = await loadAccount(web3, dispatch);
-    const token = await loadToken(web3, networkId, dispatch);
-    const exchange = await loadExchange(web3, networkId, dispatch);
-    console.log(account);
-  };
+  const ethereum = window.ethereum;
 
   useEffect(() => {
-    loadBlockchainData(dispatch);
-  }, [loadBlockchainData]);
+    dispatch(loadWeb3(ethereum));
+  }, [dispatch]);
 
   return (
     <GlobalContainer>

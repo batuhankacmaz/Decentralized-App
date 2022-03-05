@@ -9,6 +9,7 @@
   "dependencies": {
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
+    "@manaflair/redux-batch": "^1.0.0",
     "@reduxjs/toolkit": "^1.8.0",
     "@truffle/hdwallet-provider": "1.1.0",
     "apexcharts": "3.6.3",
