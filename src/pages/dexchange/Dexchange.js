@@ -1,112 +1,29 @@
 import React, {useEffect} from "react";
 import {GlobalContainer} from "../pages.styles";
 import "./Dexchange.css";
-import {connect} from "react-redux";
 import {useDispatch, useSelector} from "react-redux";
-import {
-  loadWeb3,
-  loadAccount,
-  loadToken,
-  loadExchange,
-} from "../../features/web3/web3Slice";
+import {loadWeb3} from "../../features/web3/web3Slice";
+import Content from "./Content";
 
 function Dexchange() {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.web3.token);
+  const exchange = useSelector((state) => state.web3.exchange);
   const ethereum = window.ethereum;
-
+  if (!token || !exchange) {
+    window.alert(
+      "Token or Exchange smart contract not detected on the current network. Please select another network with Metamask."
+    );
+  }
   useEffect(() => {
     dispatch(loadWeb3(ethereum));
   }, [dispatch]);
 
   return (
     <GlobalContainer>
-      <div className="content">
-        <div className="vertical-split">
-          <div className="card bg-dark text-white">
-            <div className="card-header">Card Title</div>
-            <div className="card-body">
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="/#" className="card-link">
-                Card link
-              </a>
-            </div>
-          </div>
-          <div className="card bg-dark text-white">
-            <div className="card-header">Card Title</div>
-            <div className="card-body">
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="/#" className="card-link">
-                Card link
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="vertical">
-          <div className="card bg-dark text-white">
-            <div className="card-header">Card Title</div>
-            <div className="card-body">
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="/#" className="card-link">
-                Card link
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="vertical-split">
-          <div className="card bg-dark text-white">
-            <div className="card-header">Card Title</div>
-            <div className="card-body">
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="/#" className="card-link">
-                Card link
-              </a>
-            </div>
-          </div>
-          <div className="card bg-dark text-white">
-            <div className="card-header">Card Title</div>
-            <div className="card-body">
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="/#" className="card-link">
-                Card link
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="vertical">
-          <div className="card bg-dark text-white">
-            <div className="card-header">Card Title</div>
-            <div className="card-body">
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="/#" className="card-link">
-                Card link
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      {token || exchange ? <Content /> : <div className="content"></div>}
     </GlobalContainer>
   );
 }
-function mapStateToProps(state) {
-  return {};
-}
 
-export default connect(mapStateToProps)(Dexchange);
+export default Dexchange;

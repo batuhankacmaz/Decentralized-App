@@ -57,7 +57,7 @@ export const loadToken = createAsyncThunk(
 export const loadExchange = createAsyncThunk(
   "web3/loadExchange",
 
-  async (web3) => {
+  async (web3, {dispatch}) => {
     const ethereum = window.ethereum;
     await ethereum.enable();
     const networkId = await web3.eth.net.getId();
@@ -66,6 +66,7 @@ export const loadExchange = createAsyncThunk(
         Exchange.abi,
         Exchange.networks[networkId].address
       );
+      dispatch(loadAllOrders(exchange));
       return exchange;
     } catch (error) {
       console.log(
@@ -76,12 +77,48 @@ export const loadExchange = createAsyncThunk(
   }
 );
 
+export const loadAllOrders = createAsyncThunk(
+  "web3/LoadAllOrders",
+  async (exchange) => {
+    // Fetch cancelled orders with the "Cancel" event stream
+    const cancelStream = await exchange.getPastEvents("Cancel", {
+      fromBlock: 0,
+      toBlock: "latest",
+    });
+    // Format cancelled orders
+    const cancelledOrders = cancelStream.map((event) => event.returnValues);
+    // Add cancelled orders to the redux store
+
+    // Fetch filled orders with the "Trade" event stream
+    const tradeStream = await exchange.getPastEvents("Trade", {
+      fromBlock: 0,
+      toBlock: "latest",
+    });
+    // Format filled orders
+    const filledOrders = tradeStream.map((event) => event.returnValues);
+    // Add filled orders to the redux store
+
+    // Load order stream
+    const orderStream = await exchange.getPastEvents("Order", {
+      fromBlock: 0,
+      toBlock: "latest",
+    });
+    //Format order stream
+    const allOrders = orderStream.map((event) => event.returnValues);
+    //Add open orders to the redux store
+    return {cancelledOrders, filledOrders, allOrders};
+  }
+);
+
 export const web3Slice = createSlice({
   name: "web3",
   initialState: {
     web3: {},
     token: {},
     exchange: {},
+    exchangeCancelledOrders: [],
+    exchangeFilledOrders: [],
+    exchangeAllOrders: [],
     account: "",
   },
   reducers: {
@@ -99,6 +136,11 @@ export const web3Slice = createSlice({
     },
     [loadExchange.fulfilled]: (state, action) => {
       state.exchange = action.payload;
+    },
+    [loadAllOrders.fulfilled]: (state, action) => {
+      state.exchangeCancelledOrders = action.payload.cancelledOrders;
+      state.exchangeFilledOrders = action.payload.filledOrders;
+      state.exchangeAllOrders = action.payload.allOrders;
     },
   },
 });
