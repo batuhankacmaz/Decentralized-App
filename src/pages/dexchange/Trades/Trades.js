@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Spinner from "./Spinner";
+import Spinner from "../Spinner";
 import {useSelector} from "react-redux";
 import {handleLastFilledOrders} from "./TradesFilledOrders";
 

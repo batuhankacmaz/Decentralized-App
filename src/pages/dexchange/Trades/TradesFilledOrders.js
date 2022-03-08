@@ -1,5 +1,5 @@
 import moment from "moment";
-import {ETHER_ADDRESS, GREEN, RED, tokens, ether} from "../helpers";
+import {ETHER_ADDRESS, GREEN, RED, tokens, ether} from "../../helpers";
 
 export const handleLastFilledOrders = (orders) => {
   // Decorate the orders
