@@ -1,21 +1,17 @@
-import {configureStore} from "@reduxjs/toolkit";
+import {createStore, applyMiddleware, compose} from "redux";
+import {createLogger} from "redux-logger";
+import rootReducer from "../features/dapp/reducers";
 
-// We'll use redux-logger just as an example of adding another middleware
-import logger from "redux-logger";
+const loggerMiddleware = createLogger();
+const middleware = [];
 
-// And use redux-batch as an example of adding enhancers
-import {reduxBatch} from "@manaflair/redux-batch";
+// For Redux Dev Tools
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-import web3Slice from "../features/web3/web3Slice";
-
-const preloadedState = {};
-
-export const store = configureStore({
-  reducer: {
-    web3: web3Slice,
-  },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
-  devTools: process.env.NODE_ENV !== "production",
-  preloadedState,
-  enhancers: [reduxBatch],
-});
+export default function configureStore(preloadedState) {
+  return createStore(
+    rootReducer,
+    preloadedState,
+    composeEnhancers(applyMiddleware(...middleware, loggerMiddleware))
+  );
+}

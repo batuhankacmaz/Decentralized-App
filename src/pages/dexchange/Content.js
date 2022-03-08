@@ -1,65 +1,75 @@
-import React from "react";
-import Trades from "./Trades/Trades";
-import OrderBook from "./OrderBook/OrderBook";
-function Content() {
-  return (
-    <div className="content">
-      <div className="vertical-split">
-        <div className="card bg-dark text-white">
-          <div className="card-header">Card Title</div>
-          <div className="card-body">
-            <p className="card-text">
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </p>
-            <a href="/#" className="card-link">
-              Card link
-            </a>
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {exchangeSelector} from "../../features/dapp/selectors";
+import {loadAllOrders} from "../../features/dapp/interactions";
+import OrderBook from "./OrderBook";
+import Trades from "./Trades";
+import MyTransactions from "./MyTransactions";
+
+class Content extends Component {
+  componentWillMount() {
+    this.loadBlockchainData(this.props.dispatch);
+  }
+
+  async loadBlockchainData(dispatch) {
+    await loadAllOrders(this.props.exchange, dispatch);
+  }
+
+  render() {
+    return (
+      <div className="content">
+        <div className="vertical-split">
+          <div className="card bg-dark text-white">
+            <div className="card-header">Card Title</div>
+            <div className="card-body">
+              <p className="card-text">
+                Some quick example text to build on the card title and make up
+                the bulk of the card's content.
+              </p>
+              <a href="/#" className="card-link">
+                Card link
+              </a>
+            </div>
+          </div>
+          <div className="card bg-dark text-white">
+            <div className="card-header">Card Title</div>
+            <div className="card-body">
+              <p className="card-text">
+                Some quick example text to build on the card title and make up
+                the bulk of the card's content.
+              </p>
+              <a href="/#" className="card-link">
+                Card link
+              </a>
+            </div>
           </div>
         </div>
-        <div className="card bg-dark text-white">
-          <div className="card-header">Card Title</div>
-          <div className="card-body">
-            <p className="card-text">
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </p>
-            <a href="/#" className="card-link">
-              Card link
-            </a>
+        <OrderBook />
+        <div className="vertical-split">
+          <div className="card bg-dark text-white">
+            <div className="card-header">Card Title</div>
+            <div className="card-body">
+              <p className="card-text">
+                Some quick example text to build on the card title and make up
+                the bulk of the card's content.
+              </p>
+              <a href="/#" className="card-link">
+                Card link
+              </a>
+            </div>
           </div>
+          <MyTransactions />
         </div>
+        <Trades />
       </div>
-      <OrderBook />
-      <div className="vertical-split">
-        <div className="card bg-dark text-white">
-          <div className="card-header">Card Title</div>
-          <div className="card-body">
-            <p className="card-text">
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </p>
-            <a href="/#" className="card-link">
-              Card link
-            </a>
-          </div>
-        </div>
-        <div className="card bg-dark text-white">
-          <div className="card-header">Card Title</div>
-          <div className="card-body">
-            <p className="card-text">
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </p>
-            <a href="/#" className="card-link">
-              Card link
-            </a>
-          </div>
-        </div>
-      </div>
-      <Trades />
-    </div>
-  );
+    );
+  }
 }
 
-export default Content;
+function mapStateToProps(state) {
+  return {
+    exchange: exchangeSelector(state),
+  };
+}
+
+export default connect(mapStateToProps)(Content);

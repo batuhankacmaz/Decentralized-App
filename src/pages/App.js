@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../components/navbar/Navbar";
+import Navbar from "../components/Navbar/Navbar";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Dexchange from "./dexchange/Dexchange";
 import Exchange from "./exchange/Exchange";
