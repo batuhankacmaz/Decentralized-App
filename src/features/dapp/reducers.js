@@ -47,6 +47,27 @@ function exchange(state = {}, action) {
           data: [...state.cancelledOrders.data, action.order],
         },
       };
+    case "ORDER_FILLING":
+      return {...state, orderFilling: true};
+    case "ORDER_FILLED":
+      //Prevent duplicate orders ,
+      let data;
+      const index = state.filledOrders.data.findIndex(
+        (order) => order.id === action.order.id
+      );
+      if (index === -1) {
+        data = [...state.filledOrders.data, action.order];
+      } else {
+        data = state.filledOrders.data;
+      }
+      return {
+        ...state,
+        orderFilling: false,
+        filledOrders: {
+          ...state.filledOrders,
+          data,
+        },
+      };
     default:
       return state;
   }
