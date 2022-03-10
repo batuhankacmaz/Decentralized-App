@@ -7,6 +7,8 @@ import {
   cancelledOrdersLoaded,
   filledOrdersLoaded,
   allOrdersLoaded,
+  orderCancelling,
+  orderCancelled,
 } from "./actions";
 import Token from "../../abis/Token.json";
 import Exchange from "../../abis/Exchange.json";
@@ -23,6 +25,7 @@ export const loadWeb3 = async (dispatch) => {
 };
 
 export const loadAccount = async (web3, dispatch) => {
+  await window.ethereum.enable();
   const accounts = await web3.eth.getAccounts();
   const account = await accounts[0];
   if (typeof account !== "undefined") {
@@ -96,4 +99,23 @@ export const loadAllOrders = async (exchange, dispatch) => {
   const allOrders = orderStream.map((event) => event.returnValues);
   // Add open orders to the redux store
   dispatch(allOrdersLoaded(allOrders));
+};
+
+export const cancelOrder = (dispatch, exchange, order, account) => {
+  exchange.methods
+    .cancelOrder(order.id)
+    .send({from: account})
+    .on("transactionHash", (hash) => {
+      dispatch(orderCancelling());
+    })
+    .on("error", (error) => {
+      console.log(error);
+      window.alert("There was an error");
+    });
+};
+
+export const subscribeToEvents = async (exchange, dispatch) => {
+  exchange.events.Cancel({}, (error, event) => {
+    dispatch(orderCancelled(event.returnValues));
+  });
 };
