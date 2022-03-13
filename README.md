@@ -3,6 +3,11 @@ The Exchange App project has features such as a token and exchange eth deposit e
 
 After logging in, the kovan testnet should be selected as the network. And make sure you have enough ether for testing
 
+## Technologies
+1. Solidity (Truffle and web3.js)
+2. React 
+3. Reactstrap
+
 
 ## Available Scripts
 
