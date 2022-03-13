@@ -1,6 +1,8 @@
 # Decentralized Token Exchange
 The Exchange App project has features such as a token and exchange eth deposit eth withdrawal token deposit and token withdrawal. In addition, orders are given for tokens and the orders are filled in the same way by clicking on them. In addition, the price change of the token can be seen on the chart.
 
+After logging in, the kovan testnet should be selected as the network. And make sure you have enough ether for testing
+
 
 ## Available Scripts
 
@@ -17,3 +19,4 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 ### Live App
 
 You can test and use app: [https://decentralized-exchange-token.surge.sh/](https://decentralized-exchange-token.surge.sh/)
+Do not forget to select Kovan testnet 
