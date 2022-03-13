@@ -44,7 +44,7 @@ module.exports = async function (callback) {
     const user2 = accounts[1];
 
     //User1 Deposits Ether
-    amount = 1;
+    amount = 0.1;
     await exchange.depositEther({from: user1, value: ether(amount)});
     console.log(`Deposited ${amount} Ether from ${user1}`);
 
@@ -67,7 +67,7 @@ module.exports = async function (callback) {
       token.address,
       tokens(100),
       ETHER_ADDRESS,
-      ether(0.1),
+      ether(0.01),
       {from: user1}
     );
     console.log(`Made order from ${user1}`);
@@ -85,7 +85,7 @@ module.exports = async function (callback) {
       token.address,
       tokens(100),
       ETHER_ADDRESS,
-      ether(0.1),
+      ether(0.01),
       {from: user1}
     );
     console.log(`Made order from ${user1}`);
@@ -121,7 +121,7 @@ module.exports = async function (callback) {
       token.address,
       tokens(200),
       ETHER_ADDRESS,
-      ether(0.15),
+      ether(0.05),
       {from: user1}
     );
     console.log(`Made final order from ${user1}`);
